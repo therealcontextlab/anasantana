@@ -66,10 +66,24 @@ The site is "clean" when all of the following hold. Report any that slip as a re
   across the whole site; the right direction depends on the theme. Verify against 4.5:1.
 - The Assay page defines two accents: --accent #C2602B (clay, keep for decorative strokes and
   the ::selection highlight) and --accent2 #E7A77E (lighter, use for accent text on the dark bg).
+- Measured 2026-07-06: clay #C2602B on the Assay bg #0B211E is 4.0:1; peach --accent2 #E7A77E on
+  the same bg is 8.18:1. Clay-as-text appears three times, but only TWO fail AA (both small text
+  needing 4.5:1): the rank number (16px bold) and the band glyph (11px). The third, the H1 word
+  "next." (28-42px bold), is large text and clears 3:1, so it passes and keeps the clay hero
+  accent. Do not lump the H1 in with the two failures; earlier runs said "three outliers" and
+  that was one too many. The fix is repointing only the two small-text spans to --accent2.
 - Assay was built with Claude and ships as a compiled bundle (__bundler/template, data-props).
   Its head (title, meta) is plain HTML and safe to hand-edit; its CSS and body live inside the
   compiled/escaped template and are fragile to hand-edit. Copy and style changes belong in the
   source and a re-publish, not in the deployed file, or a re-publish will overwrite them.
+- "Source" for Assay means the Claude artifact the owner built it in, NOT assay.html. assay.html
+  is the compiled export of that artifact (the escaped string with {{ }} placeholders, sc-for
+  loops, \u002F slashes). The durable fix lives in the artifact and a re-export. Explain this
+  plainly if asked; it came up 2026-07-06. One precision: the specific accent swap (var(--accent)
+  to var(--accent2)) adds one character and touches no quote or slash, so it would NOT break the
+  escaping if hand-applied to assay.html. The real reason to fix it in the artifact is overwrite
+  on the next re-publish, not breakage. Do not overstate a direct edit as "can break the page"
+  for this particular change.
 - Headshot is EXIF-clean (no GPS, no camera data). ana-headshot.jpg exists at the repo root and
   renders when served; a "missing headshot" is almost always the delivered HTML opened locally
   (file://) with the image not beside it, not a real break. Re-check only if the image changes.
@@ -151,3 +165,19 @@ jump to a heavy SPA framework. Keep it static.
 - Assay og + meta description still to add (owner has the snippet); favicon still open;
   CSP deferred (coupled to the parked build).
 - Owner confirmed: portfolio and venture stay on separate tracks; v2 build stays parked.
+
+### 2026-07-06
+- Third run, source/repo only (fresh clone at HEAD; could not load the live URL from this
+  environment). No live header/console/render checks this run.
+- Resolved since last run: all four removed-but-served pages (resume.html, resume.pdf,
+  however-you-got-here.html, work/vault-and-brawl.html) are deleted from the repo. Live confirm
+  that they no longer 200 is still pending a live load.
+- Assay accent contrast re-measured and corrected from three failures to two. Recorded the exact
+  ratios (clay 4.0:1, peach 8.18:1 on #0B211E) and that the H1 "next." passes as large text.
+  Still open; lives in the artifact, closes on re-export.
+- Clarified "source" = the Claude artifact, not the compiled assay.html, and corrected the
+  earlier "a direct edit can break the page" line for this specific accent swap.
+- Provided a ready-to-paste Assay preview-card block (og + twitter + description, reusing
+  /og.png). Still to be placed by the owner. Favicon still open. CSP still deferred.
+- Owner is fixing the open items separately this run; no files changed by the audit beyond
+  this log and learnings update.

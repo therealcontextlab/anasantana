@@ -117,3 +117,52 @@ job search is now a documented floor, not the site's main job.
 - Live response headers (HSTS and the rest), console on load, 375px phone width, and the
   exact rendered contrast counts on the Assay page. Carry forward or confirm on a live run.
 - Live-vs-repo drift: repo HEAD has the new homepage; confirm the deployed site matches.
+
+## 2026-07-06
+
+Scope: repo source, read from a fresh GitHub clone at HEAD. Live URL not loaded this
+run, so live and rendered checks (served headers, console on load, 375px width, and
+whether the four deleted URLs still return 200) carry forward or are marked confirm.
+
+Owner intent unchanged: out of search, URL open to anyone who has it.
+
+### Fundamentals
+
+- [RESOLVED in repo] Removed-but-served pages. resume.html, resume.pdf,
+  however-you-got-here.html, and work/vault-and-brawl.html are all gone from HEAD
+  (last commit deletes however-you-got-here.html). Closes the repo side of the item
+  the owner agreed to on 2026-07-05. Live confirm pending: verify the four URLs no
+  longer return 200 once the deploy has propagated.
+- [OPEN, source re-publish] Assay accent contrast, sharpened from three failures to two.
+  Clay --accent #C2602B on the Assay bg #0B211E measures 4.0:1 (computed). Three spans
+  paint it as text. Only two fail AA: the rank number (16px bold) and the band glyph
+  (11px), both small text needing 4.5:1. The third, the H1 word "next." (28-42px bold),
+  is large text and clears the 3:1 bar, so it is not a failure and keeps the clay hero
+  accent. Fix: repoint the two small-text spans to --accent2 #E7A77E (8.18:1) in the
+  Assay artifact and re-export. Prior runs recorded "three outliers"; corrected to two.
+
+### Suggestions
+
+- [OPEN, safe head edit] Assay preview card. The Assay head still carries title and
+  robots only. A ready-to-paste og + twitter + description block (reusing /og.png) was
+  provided this run; owner to place it in the head and may swap in their own snippet.
+- [OPEN] Favicon. None at the root, none declared in either head. Optional.
+- [DEFERRED] CSP / Permissions-Policy. Unchanged, still coupled to the parked build.
+- [ACCEPTED] No sitemap.xml. Correct for an out-of-search site.
+
+### Verified clean (from source this run)
+
+- Out of search intact: robots.txt Disallow: /, _headers X-Robots-Tag: noindex, nofollow,
+  and meta robots noindex on both index.html and assay.html. All three agree.
+- Homepage: one H1, h1 -> h2 -> h3 with no skip, the AA contrast override sits outside
+  both media queries so it holds at every width, full OG card, zero links to removed
+  pages, portrait has alt text and set width/height, reveal is vanilla IntersectionObserver.
+- Security headers in _headers: X-Frame-Options DENY, X-Content-Type-Options nosniff,
+  Referrer-Policy, X-Robots-Tag.
+- No secrets in source. Headshot re-checked: no EXIF block present.
+
+### Not verified this run (no live load)
+
+- Served response headers including HSTS, console on load, 375px phone width,
+  live-vs-repo drift, and whether the four deleted URLs still 200 until the deploy
+  propagates.
