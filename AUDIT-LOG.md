@@ -201,3 +201,31 @@ Owner intent unchanged: out of search, URL open to anyone who has it.
 ### Not verified this run (no live load)
 - Served HSTS on Cloudflare (likely absent now that the host changed), the four deleted URLs no
   longer 200, live-vs-repo drift, console on load, 375px width.
+
+## 2026-07-06 (run 4)
+
+Scope: repo source, fresh clone at HEAD 979e278. Live URL not loadable from this
+environment (not in the network allowlist), so served headers, console on load, 375px
+width, and whether the four deleted URLs still 200 carry forward as confirm-on-live.
+
+Owner intent unchanged: out of search, URL open to anyone who has it.
+
+### Fundamentals
+- [NONE OPEN] The full definition of clean holds against HEAD. Out-of-search: three
+  signals agree (robots Disallow /, meta noindex both pages, X-Robots-Tag noindex).
+  Orphan pages absent from git ls-files. Homepage one H1, h1->h2->h3 no skip; Assay one H1.
+  Assay contrast in place: color:var(--accent) appears once (the large-text H1 word "next.",
+  passes 3:1); the two small-text spans on --accent2 (8.18:1); accent2 used 8x. Security
+  headers present. No secrets, no EXIF on ana-headshot.jpg or og.png. OG+twitter card on both
+  pages. Homepage links only to assay.html and /favicon.svg. All four mailto on hello@anasantana.me.
+
+### Suggestions
+- [DEFERRED] CSP / Permissions-Policy. Unchanged, still coupled to the parked build.
+- [ACCEPTED] No sitemap.xml. Correct for an out-of-search site.
+
+### Not verified this run (no live load)
+- Served HSTS on Cloudflare (likely absent; not in _headers, Cloudflare omits by default),
+  the four deleted URLs no longer 200, live-vs-repo drift, console on load, 375px width.
+
+### No files changed
+- Source fully clean; the audit changed nothing beyond this log and the learnings update.

@@ -226,3 +226,15 @@ jump to a heavy SPA framework. Keep it static.
   on Cloudflare (likely absent now), the four deleted URLs no longer 200, live-vs-repo drift.
 - Skill file itself is now partly stale: SKILL.md and references/netlify.md still describe Netlify deploy
   and header mechanics and need a Cloudflare rewrite. Tracked separately from this file.
+
+### 2026-07-06 (run 4)
+- Fourth run, source/repo only (fresh clone at HEAD 979e278; live URL not loadable here).
+- First run to find the source fully clean: zero open Layer 1 fundamentals. Everything the
+  prior migration session shipped is confirmed in HEAD (Assay contrast on --accent2, Assay
+  preview card, favicon both pages, orphan pages gone from git ls-files, hello@anasantana.me,
+  positioning label consistent). Mechanical counts checked: assay.html has color:var(--accent)
+  exactly once (the passing large-text H1 "next."), color:var(--accent2) 8x.
+- Only open work is live-load-dependent (HSTS, four deleted URLs no longer 200, drift) plus the
+  deferred CSP. No source fixes to propose; did not manufacture any.
+- Note: an assistant's stored memory of this site can lag the repo (still showed Netlify and several shipped items as "outstanding"). The committed learnings + log in the repo are the
+  source of truth; trust them over any external memory of site state.
