@@ -46,9 +46,11 @@ The site is "clean" when all of the following hold. Report any that slip as a re
   errors on load, no secrets or EXIF exposure, /.git and /.env not served, and no page that
   was removed from the site still served at its URL.
 - Link previews present: og:title, og:description, and og:image on every page (the site is
-  shared by URL, so the card is the first impression). Homepage meets this; Assay pending.
+  shared by URL, so the card is the first impression). Both index.html and assay.html now meet
+  this (Assay card added 2026-07-06).
 - Live matches repo: the deployed site reflects the current repo HEAD (no drift).
-- Security headers hold: X-Frame-Options, X-Content-Type-Options, Referrer-Policy, HSTS.
+- Security headers hold: X-Frame-Options, X-Content-Type-Options, Referrer-Policy. HSTS is now
+  host-dependent (Cloudflare Pages omits it by default); confirm on a live run, do not assume it.
 
 ## Site facts (known and stable)
 
@@ -57,7 +59,7 @@ The site is "clean" when all of the following hold. Report any that slip as a re
   confirm the three signals still agree.
 - Purpose (as of 2026-07-05): the site is a front door for the owner's own audience and
   venture, not primarily a recruiter portfolio. The job search is a documented floor.
-- Stack: domain at Porkbun, hosted on Netlify, auto-deploys from the GitHub repo. Owner is
+- Stack: domain at Porkbun, hosted on Cloudflare Pages, auto-deploys from GitHub main (moved off Netlify 2026-07-06; delete the paused Netlify project so it cannot draw credits). For small text edits, find-and-replace inside the GitHub web editor is the reliable route; a whole-file paste from a stale local copy silently kept the old content more than once this session. Owner is
   not fluent in Git; handoffs stay dead simple and the GitHub web editor is the default path.
 - Two themes, opposite contrast fixes. The homepage is LIGHT (paper #EEF2F1): rust as small
   text fails AA, so the fix is to DARKEN to rust-dark #a84e20 (4.9:1). The Assay page is DARK
@@ -87,15 +89,27 @@ The site is "clean" when all of the following hold. Report any that slip as a re
 - Headshot is EXIF-clean (no GPS, no camera data). ana-headshot.jpg exists at the repo root and
   renders when served; a "missing headshot" is almost always the delivered HTML opened locally
   (file://) with the image not beside it, not a real break. Re-check only if the image changes.
-- Not purely static HTML/CSS. vendor/ ships React and in-browser Babel; the Assay page transpiles
-  JSX at runtime. The homepage does NOT (its only script is a vanilla IntersectionObserver reveal).
+- Not purely static HTML/CSS. vendor/ is LOAD-BEARING. Do NOT delete it. The Assay boot script
+  fetches /vendor/react.production.min.js, /vendor/react-dom.production.min.js, and /vendor/babel.min.js
+  by hardcoded path at load, then transpiles JSX in the browser. Delete vendor/ and Assay renders
+  blank with a bundle error (this happened 2026-07-06, restored same day). The homepage does NOT (its only script is a vanilla IntersectionObserver reveal).
   Any Content-Security-Policy must account for the Assay page's inline scripts and Babel
   ('unsafe-eval'); a naive CSP breaks that page. CSP is coupled to the parked build rebuild.
 - _headers sets X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy, and
   X-Robots-Tag noindex. It does NOT set CSP or Permissions-Policy. HSTS was seen live on
-  2026-07-02 (Netlify default), not in _headers.
+  2026-07-02 (Netlify default). Host is now Cloudflare Pages, which does NOT send HSTS by default, and it is
+  not in _headers, so treat HSTS as UNCONFIRMED until a live check or until enabled in Cloudflare
+  SSL/TLS. Cloudflare Pages does honor the _headers file (verified during the 2026-07-06 migration).
 - Internal links are relative (assay.html), not root-absolute. og.png is at the repo root and
   referenced as https://anasantana.me/og.png.
+
+- Contact email is hello@anasantana.me (custom-domain Proton address, updated 2026-07-06 from the
+  old santana.ana.333@protonmail.com). All four homepage mailto links use it.
+- favicon.svg is at the repo root and linked from both index.html and assay.html (added 2026-07-06),
+  the level-mark glyph on a dark tile.
+- Positioning label is "Team Leadership · Voice of Customer · AI Solutions," consistent across the
+  title, og:title, hero eyebrow, hero kick, and JSON-LD jobTitle (set 2026-07-06). A surface that
+  disagrees is the regression to flag.
 
 ## Environment quirks and workarounds
 
@@ -112,8 +126,15 @@ The site is "clean" when all of the following hold. Report any that slip as a re
 - Network and console capture start on the first tool call. Reload the page after starting
   capture, or load-time errors are missed.
 
+- A text search of assay.html for a filename or path (for example "vendor") can return nothing even
+  when the page loads it, because the reference lives inside the compiled gzip+base64 bundle blob.
+  Decompress the bundle asset before concluding something is unreferenced. Empty search is not proof
+  of "unused." This is exactly how vendor/ got deleted on 2026-07-06.
+
 ## Retired questions (never ask these again)
 
+- "Is vendor/ dead weight, can it be deleted." No. It is load-bearing; Assay fetches React and
+  Babel from it at runtime. Never propose deleting it.
 - "Which fix do you want to start with." Go in severity order.
 - "Where does the site live." The target is fixed above. On a bare "audit," load it and begin.
 - "Is the headshot broken." Check whether ana-headshot.jpg exists at the repo root (it does) and
@@ -181,3 +202,27 @@ jump to a heavy SPA framework. Keep it static.
   /og.png). Still to be placed by the owner. Favicon still open. CSP still deferred.
 - Owner is fixing the open items separately this run; no files changed by the audit beyond
   this log and learnings update.
+
+### 2026-07-06 (migration and fixes shipped, not a standard audit run)
+- Host and DNS moved off Netlify. Netlify hit its free-tier credit cap and paused the site (free tier
+  pauses, no charge). Migrated to Cloudflare Pages, same GitHub repo, auto-deploy on push. Nameservers
+  moved Porkbun -> Cloudflare. All eight Proton email records (2 MX, SPF, DMARC, 3 DKIM, verification)
+  were verified present in Cloudflare BEFORE the nameserver flip, so mail never dropped. The three DKIM
+  CNAMEs were set to DNS only (grey cloud), not proxied. Netlify to be deleted.
+- Email DNS de-duplicated: removed a leftover second SPF (v=spf1 -all) and a second DMARC (strict
+  p=reject); kept one SPF (Proton include) and one DMARC (p=quarantine). Proton SPF and DMARC now pass.
+- vendor/ was deleted on a false "unused" read (a text search of assay.html missed the paths inside the
+  compiled blob), which broke Assay live with a bundle error, then restored. Now recorded above as a hard
+  do-not-delete rule plus the search-trap quirk so it cannot recur.
+- Shipped and confirmed in HEAD: Assay accent contrast fixed (the two small-text spans repointed to
+  --accent2, edited directly in assay.html and committed; the swap adds one char and does not break the
+  escaping); Assay preview card added (og + twitter + meta description in the head); favicon.svg added at
+  root and linked on both pages; homepage contact email updated to hello@anasantana.me; homepage
+  repositioned to "Team Leadership · Voice of Customer · AI Solutions" across title, og, eyebrow, kick,
+  and JSON-LD.
+- Now RESOLVED (were open or proposed): Assay contrast, Assay og and meta, favicon. Carry as closed into
+  the next run's "Since last run."
+- Still open: CSP (deferred, coupled to the parked build). Live confirms pending a live load: served HSTS
+  on Cloudflare (likely absent now), the four deleted URLs no longer 200, live-vs-repo drift.
+- Skill file itself is now partly stale: SKILL.md and references/netlify.md still describe Netlify deploy
+  and header mechanics and need a Cloudflare rewrite. Tracked separately from this file.

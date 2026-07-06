@@ -166,3 +166,38 @@ Owner intent unchanged: out of search, URL open to anyone who has it.
 - Served response headers including HSTS, console on load, 375px phone width,
   live-vs-repo drift, and whether the four deleted URLs still 200 until the deploy
   propagates.
+
+## 2026-07-06 (migration and fixes, not a standard audit run)
+
+Scope: not an audit pass. Record of a host/DNS migration and a batch of owner fixes shipped
+this session, so the next audit diffs against reality.
+
+Owner intent unchanged: out of search, URL open to anyone who has it.
+
+### Environment change
+- [DONE] Moved off Netlify to Cloudflare Pages (Netlify free-tier credits capped and paused the
+  site; no charge). Nameservers moved Porkbun -> Cloudflare; site auto-deploys from GitHub main.
+  All Proton email records verified in Cloudflare before the flip; mail did not drop. DKIM CNAMEs
+  set DNS-only. Netlify project to be deleted.
+- [DONE] Email DNS de-duplicated: one SPF (Proton include), one DMARC (p=quarantine). Was two of each.
+
+### Fundamentals
+- [RESOLVED] Assay accent contrast. The two small-text spans (rank number, band glyph) repointed
+  from --accent #C2602B to --accent2 #E7A77E on the dark bg. Committed directly to assay.html.
+- [INCIDENT, resolved] vendor/ deleted on a false "unused" read, broke Assay live (bundle error),
+  restored same day. Recorded as do-not-delete in AUDIT-LEARNINGS.md.
+
+### Suggestions
+- [RESOLVED] Assay preview card. og:title/description/image + twitter tags + meta description added
+  to the Assay head, reusing /og.png.
+- [RESOLVED] Favicon. favicon.svg added at root, linked from index.html and assay.html.
+- [DEFERRED] CSP / Permissions-Policy. Unchanged, still coupled to the parked build.
+- [ACCEPTED] No sitemap.xml. Correct for an out-of-search site.
+
+### Also shipped (owner content)
+- Homepage contact email -> hello@anasantana.me. Homepage repositioned to "Team Leadership · Voice
+  of Customer · AI Solutions" across title, og, eyebrow, kick, and JSON-LD.
+
+### Not verified this run (no live load)
+- Served HSTS on Cloudflare (likely absent now that the host changed), the four deleted URLs no
+  longer 200, live-vs-repo drift, console on load, 375px width.
