@@ -238,3 +238,17 @@ jump to a heavy SPA framework. Keep it static.
   deferred CSP. No source fixes to propose; did not manufacture any.
 - Note: an assistant's stored memory of this site can lag the repo (still showed Netlify and several shipped items as "outstanding"). The committed learnings + log in the repo are the
   source of truth; trust them over any external memory of site state.
+
+## Live finding 2026-07-06 (run 4): Cloudflare soft-404 on deleted URLs
+- Deleted URLs serve the HOMEPAGE at 200, not a 404. Cause: Cloudflare Pages with no top-level
+  404.html defaults to single-page-app behavior and rewrites any unmatched path to /index.html
+  (200 OK). Documented Cloudflare default. This is NEW since the Netlify move; do NOT expect a
+  bare 404 on this host without a 404.html present.
+- Content-exposure concern is CLOSED regardless: the old resume/HYGH/Vault content is not served;
+  the URLs fall through to the homepage. The carried "verify four deleted URLs no longer 200" item
+  is answered: they DO 200, but only as the homepage soft-404, not the old content.
+- To get real 404s here: add ONE file, /404.html at the repo root. Cloudflare then returns it with
+  a 404 status for any unknown path. Owner declined 2026-07-06 (noindexed, no inbound links to dead URLs);
+  soft-404 accepted as-is. Do not re-propose a 404.html unless the site becomes indexable or gains inbound links.
+- Repo has no 404.html as of HEAD 979e278. If a future run sees deleted URLs "resolving to homepage,"
+  this is the reason, not a broken delete.

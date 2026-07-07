@@ -229,3 +229,15 @@ Owner intent unchanged: out of search, URL open to anyone who has it.
 
 ### No files changed
 - Source fully clean; the audit changed nothing beyond this log and the learnings update.
+
+### Live finding (owner-reported, 2026-07-06, run 4)
+- [RESOLVED, content side] The four deleted URLs (/resume.html, /resume.pdf,
+  /however-you-got-here.html, /work/vault-and-brawl.html) render the HOMEPAGE live, not the
+  old content. The exposure concern that drove the deletion (old resume + sensitive HYGH page
+  reachable by URL) is closed: that content is no longer served.
+- [MECHANISM, confirmed via Cloudflare docs] They return 200, not 404. Cloudflare Pages with no
+  top-level 404.html treats the site as a single-page app and serves index.html for any unmatched
+  path with a 200 (documented default; this is a soft-404). This behavior is new since the Netlify
+  migration; the prior "expected to 404 post-deploy" was wrong for this host.
+- [ACCEPTED as-is] Real 404s. Owner declined a 404.html (2026-07-06): site is noindexed and nothing
+  links to the dead URLs, so a true 404 buys nothing. Homepage soft-404 at 200 left in place on purpose.
