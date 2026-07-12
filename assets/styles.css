@@ -359,18 +359,15 @@ em.italic { font-style: italic; }
 :focus-visible { outline: 2px solid var(--green-lit); outline-offset: 3px; border-radius: 2px; }
 
 /* =========================================================================
-   Home hero — message-first, full width
+   Home hero — copy left, portrait lower-right; stacks cleanly on mobile
    ========================================================================= */
-.hero__copy { grid-column: 1 / -1; }
-
-/* Story — prose with the portrait alongside; stacks on mobile */
-.story__copy { grid-column: 1 / span 7; }
-.story__portrait { grid-column: 9 / span 4; justify-self: end; }
-.story__img { width: 100%; max-width: 300px; border: 1px solid var(--line-2); }
+.hero__copy { grid-column: 1 / span 8; }
+.hero__portrait { grid-column: 9 / span 4; justify-self: end; }
+.hero__img { width: 100%; max-width: 300px; border: 1px solid var(--line-2); }
 @media (max-width: 820px) {
-  .story__copy { grid-column: 1 / -1; }
-  .story__portrait { grid-column: 1 / -1; justify-self: start; margin-top: 1.2rem; }
-  .story__img { max-width: 240px; }
+  .hero__copy { grid-column: 1 / -1; }
+  .hero__portrait { grid-column: 1 / -1; justify-self: start; margin-top: 1rem; }
+  .hero__img { max-width: 220px; }
 }
 
 /* =========================================================================
