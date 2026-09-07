@@ -10,8 +10,7 @@ My site. One person, one voice, across two pages and the repo you are reading no
 ## Stack
 
 Static HTML, CSS, and vanilla JavaScript. No framework, no build step. Self-hosted fonts.
-Hosted on Cloudflare Pages, auto-deployed from `main`. Kept out of search on purpose
-(`robots.txt`, `noindex`, and an `X-Robots-Tag` header all agree).
+Hosted on Cloudflare Pages, auto-deployed from `main`.
 
 ## Structure
 
